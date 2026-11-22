@@ -1,5 +1,6 @@
 import avatar from "../../images/avatar.jpg";
-import { useState, useEffect } from "react";
+import { useContext, useEffect } from "react";
+import CurrentUserContext from "../../contexts/CurrentUserContext.js";
 import Popup from "./components/Popup/Popup";
 import NewCard from "./components/Popup/components/NewCard/NewCard";
 import EditProfile from "./components/Popup/components/EditProfile/EditProfile";
@@ -8,66 +9,50 @@ import Card from "./components/Card/Card";
 import ImagePopup from "./components/Popup/components/ImagePopup/ImagePopup";
 import RemoveCard from "./components/Popup/components/RemoveCard/RemoveCard";
 
-const cards = [
-  {
-    isLiked: false,
-    _id: "5d1f0611d321eb4bdcd707dd",
-    name: "Yosemite Valley",
-    link: "https://practicum-content.s3.us-west-1.amazonaws.com/web-code/moved_yosemite.jpg",
-    owner: "5d1f0611d321eb4bdcd707dd",
-    createdAt: "2019-07-05T08:10:57.741Z",
-  },
-  {
-    isLiked: false,
-    _id: "5d1f064ed321eb4bdcd707de",
-    name: "Lake Louise",
-    link: "https://practicum-content.s3.us-west-1.amazonaws.com/web-code/moved_lake-louise.jpg",
-    owner: "5d1f0611d321eb4bdcd707dd",
-    createdAt: "2019-07-05T08:11:58.324Z",
-  },
-];
+export default function Main({
+  popup,
+  onOpenPopup,
+  onClosePopup,
+  cards,
+  onCardLike,
+  onCardDelete,
+  onAddPlaceSubmit,
+}) {
+  const { currentUser } = useContext(CurrentUserContext);
 
-console.log(cards);
-
-export default function Main() {
-  const [popup, setPopup] = useState(null);
   function handleAddCardClick() {
-    setPopup({
+    onOpenPopup({
       title: "Novo local",
-      children: <NewCard />,
+      children: <NewCard onAddPlaceSubmit={onAddPlaceSubmit} />,
     });
   }
 
   function handleEditProfileClick() {
-    setPopup({
+    onOpenPopup({
       title: "Editar perfil",
       children: <EditProfile />,
     });
   }
 
   function handleEditAvatarClick() {
-    setPopup({
+    onOpenPopup({
       title: "Alterar a foto do perfil",
       children: <EditAvatar />,
     });
   }
 
   function handleImageClick(card) {
-    setPopup({
+    onOpenPopup({
       title: null,
       children: <ImagePopup card={card} />,
     });
   }
 
-  function handleDeleteClick() {
-    setPopup({
+  function handleDeleteClick(card) {
+    onOpenPopup({
       title: "Tem certeza?",
-      children: <RemoveCard />,
+      children: <RemoveCard onConfirm={() => onCardDelete(card)} />,
     });
-  }
-
-  function handleClosePopup() {
-    setPopup(null);
   }
 
   useEffect(() => {
@@ -75,7 +60,7 @@ export default function Main() {
 
     function handleEscClose(event) {
       if (event.key === "Escape") {
-        setPopup(null);
+        onClosePopup();
       }
     }
 
@@ -84,30 +69,35 @@ export default function Main() {
     return () => {
       document.removeEventListener("keydown", handleEscClose);
     };
-  }, [popup]);
+  }, [popup, onClosePopup]);
 
   return (
     <main className="content">
       <section className="profile page__section">
         <div className="profile__avatar">
-          <img className="profile__image" src={avatar} alt="Avatar" />
+          <img
+            className="profile__image"
+            src={currentUser?.avatar ?? avatar}
+            alt="Avatar"
+          />
           <button
             className="profile__avatar-edit-button"
             type="button"
             aria-label="Editar foto do perfil"
             onClick={handleEditAvatarClick}
-          ></button>
+          />
         </div>
 
         <div className="profile__info">
-          <h1 className="profile__title">Jacques Cousteau</h1>
+          <h1 className="profile__title">{currentUser?.name}</h1>
           <button
             aria-label="Editar perfil"
             className="profile__edit-button"
             type="button"
             onClick={handleEditProfileClick}
-          ></button>
-          <p className="profile__description">Explorador</p>
+            disabled={!currentUser}
+          />
+          <p className="profile__description">{currentUser?.about}</p>
         </div>
 
         <button
@@ -115,7 +105,7 @@ export default function Main() {
           className="profile__add-button"
           type="button"
           onClick={handleAddCardClick}
-        ></button>
+        />
       </section>
 
       <section className="cards page__section">
@@ -126,13 +116,14 @@ export default function Main() {
               card={card}
               onImageClick={handleImageClick}
               onDeleteClick={handleDeleteClick}
+              onCardLike={onCardLike}
             />
           ))}
         </ul>
       </section>
 
       {popup && (
-        <Popup title={popup.title} onClose={handleClosePopup}>
+        <Popup title={popup.title} onClose={onClosePopup}>
           {popup.children}
         </Popup>
       )}

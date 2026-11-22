@@ -1,39 +1,77 @@
-export default function NewCard() {
+import { useState } from "react";
+
+export default function NewCard({ onAddPlaceSubmit }) {
+  const [name, setName] = useState("");
+  const [link, setLink] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+
+    const cardName = name.trim();
+
+    if (cardName.length < 2) {
+      setErrorMessage("Digite um título com pelo menos 2 caracteres.");
+      return;
+    }
+
+    setIsSaving(true);
+    setErrorMessage("");
+
+    try {
+      await onAddPlaceSubmit({ name: cardName, link: link.trim() });
+    } catch (error) {
+      console.error(error);
+      setErrorMessage("Não foi possível criar o cartão. Tente novamente.");
+    } finally {
+      setIsSaving(false);
+    }
+  }
+
   return (
     <form
       className="popup__form"
-      name="card-form"
+      name="new-card-form"
       id="new-card-form"
-      noValidate
+      onSubmit={handleSubmit}
     >
-      <label className="popup__field">
+      <label className="popup__label">
         <input
-          className="popup__input popup__input_type_card-name"
-          id="card-title-input"
-          maxLength="30"
-          minLength="2"
+          className="popup__input"
           name="place-name"
-          placeholder="Título"
-          required
           type="text"
-        />
-        <span className="card-title-input-error popup__input-error"></span>
-      </label>
-
-      <label className="popup__field">
-        <input
-          className="popup__input popup__input_type_url"
-          id="card-link-input"
-          name="link"
-          placeholder="Link de Imagem"
+          placeholder="Título"
+          aria-label="Título do local"
+          minLength={2}
+          maxLength={30}
+          value={name}
+          onChange={(event) => setName(event.target.value)}
           required
-          type="url"
         />
-        <span className="card-link-input-error popup__input-error"></span>
       </label>
 
-      <button className="button popup__button" type="submit">
-        Criar
+      <label className="popup__label">
+        <input
+          className="popup__input"
+          name="link"
+          type="url"
+          placeholder="Link da imagem"
+          aria-label="Link da imagem do local"
+          value={link}
+          onChange={(event) => setLink(event.target.value)}
+          required
+        />
+      </label>
+
+      {errorMessage && <p role="alert">{errorMessage}</p>}
+
+      <button
+        className="button popup__button"
+        type="submit"
+        disabled={isSaving}
+      >
+        {isSaving ? "Criando..." : "Criar"}
       </button>
     </form>
   );
