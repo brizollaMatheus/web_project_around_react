@@ -1,16 +1,35 @@
-# React + Vite
+# EUA Afora
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+EUA Afora é uma galeria interativa de fotos desenvolvida como parte do curso de Desenvolvimento Web da TripleTen. A aplicação permite personalizar o perfil, adicionar fotos à galeria e interagir com os cartões.
 
-Currently, two official plugins are available:
+## Funcionalidades
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Editar o nome, a descrição e o avatar do perfil.
+- Adicionar cartões com título e URL da imagem.
+- Abrir as imagens em tamanho ampliado.
+- Curtir e descurtir cartões. As curtidas permanecem salvas ao atualizar a página.
+- Excluir cartões da galeria.
+- Fechar os pop-ups pelo botão de fechar, pela tecla Esc.
 
-## React Compiler
+## Tecnologias
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- React
+- JavaScript
+- HTML e CSS
+- Vite
+- API REST
 
-## Expanding the ESLint configuration
+## Como rodar o projeto
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Na pasta do projeto, instale as dependências e inicie o servidor de desenvolvimento:
+
+```bash
+npm install
+npm run dev
+```
+
+Abra no navegador o endereço exibido no terminal.
+
+## Projeto publicado
+
+[Acesse o EUA Afora] (https://github.com/brizollaMatheus/web_project_around_react)
