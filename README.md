@@ -29,7 +29,3 @@ npm run dev
 ```
 
 Abra no navegador o endereço exibido no terminal.
-
-## Projeto publicado
-
-[Acesse o EUA Afora] (https://github.com/brizollaMatheus/web_project_around_react)
